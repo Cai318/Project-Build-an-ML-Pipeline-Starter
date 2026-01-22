@@ -40,7 +40,6 @@ def go(config: DictConfig):
             _ = mlflow.run(
                 f"{config['main']['components_repository']}/get_data",
                 "main",
-                #env_manager="conda",
                 parameters={
                     "sample": config["etl"]["sample"],
                     "artifact_name": "sample.csv",
@@ -55,7 +54,6 @@ def go(config: DictConfig):
             _ = mlflow.run(
                 os.path.join(hydra.utils.get_original_cwd(), "src", "basic_cleaning"),
                 "main",
-                #env_manager="conda",
                 parameters={
                     "input_artifact": "sample.csv:latest",
                     "output_artifact": "clean_sample.csv",
@@ -74,7 +72,6 @@ def go(config: DictConfig):
             _ = mlflow.run(
                 os.path.join(hydra.utils.get_original_cwd(), "src", "data_check"),
                 "main",
-                #env_manager="conda",
                 parameters={
                     "csv": "clean_sample.csv:latest",
                     "ref": "clean_sample.csv:reference",
@@ -124,7 +121,7 @@ def go(config: DictConfig):
                     "stratify_by": config["modeling"]["stratify_by"],
                     "rf_config": rf_config,
                     "max_tfidf_features": config["modeling"]["max_tfidf_features"],
-                    "output_artifact": "random_forest_model",
+                    "output_artifact": "random_forest_model", #"random_forest_export"
                 },
             )
             ##################
@@ -139,8 +136,8 @@ def go(config: DictConfig):
                 "main",
                 #env_manager="conda",
                 parameters={
-                    "mlflow_model": "random_forest_model:prod",
-                    "test_data": "test.csv:latest",
+                    "mlflow_model": "random_forest_model:prod", #"random_forest_export:prod"
+                    "test_dataset": "test_data.csv:latest",
                 },
             )
             ##################
